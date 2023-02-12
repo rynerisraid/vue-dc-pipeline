@@ -3,16 +3,14 @@
         <div class="app-container">
             <n-card shadow="never" >
                 <div class="editor-tools">
-                    <el-form-item>
                     <n-button type="primary" @click="handleExecution">解析</n-button>
                     <n-button @click="resetEditor">重置</n-button>
-                    </el-form-item>
                 </div>
                 <div class="editor-wrapper">
                     <codemirror
                     v-model="code"
                     placeholder="Code goes here..."
-                    :style="{ height: '400px'}"
+                    :style="{ height: '720px'}"
                     :autofocus="true"
                     :indent-with-tab="true"
                     :tab-size="2"
@@ -23,6 +21,9 @@
                     @blur="log('blur', $event)"
                     />
                 </div>
+            </n-card>
+            <n-card style="margin-left:20px">
+              力道图
             </n-card>
         </div>
     </CommonPage>
@@ -35,9 +36,15 @@ import { Codemirror } from 'vue-codemirror'
 //import { javascript } from '@codemirror/lang-javascript'
 import { sql } from '@codemirror/lang-sql'
 //import { useCodeStore } from '@/store/editor/code'
+import { useCodeStore } from '@/store'
 
+
+
+
+const codeStore = useCodeStore()
 const code = ref(`select * from users;`)
 const extensions = [ sql() ] //javascript() 
+
 
 // Codemirror EditorView instance ref
 const view = shallowRef()
@@ -59,7 +66,7 @@ const getCodemirrorStates = () => {
 const log = console.log;
 
 const resetEditor = () => {
-  //code.value = useCodeStore().resetCode();
+  code.value = codeStore.resetCode();
   //"select * from users;"
   console.log('resetEditor')
   
@@ -67,7 +74,7 @@ const resetEditor = () => {
 
 const handleExecution = () =>{
   console.log('handleExecution')
-  //useCodeStore().parseCode(code.value);
+  codeStore.handleParse(code.value);
 }
 
 
@@ -75,7 +82,9 @@ const handleExecution = () =>{
 
 <style lang="scss" scoped>
 
-
+.app-container{
+  display: flex;
+}
 .editor-tools {
   margin-bottom: 20px;
   :deep(.el-card__body) {
@@ -84,7 +93,8 @@ const handleExecution = () =>{
 }
 
 .editor-wrapper {
-  margin-bottom: 5px;
+  margin-bottom: 2px;
+  height: 100%;
 }
 
 </style>
